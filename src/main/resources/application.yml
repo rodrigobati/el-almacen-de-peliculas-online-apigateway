@@ -1,0 +1,71 @@
+# Puerto en el que se ejecuta el API Gateway
+server:
+  port: 9500
+  # Si quieres habilitar HTTPS, agrega aquí la configuración SSL
+
+logging:
+  level:
+    root: INFO # Nivel de log global
+    org.springframework.web: INFO # Nivel de log para Spring Web
+    org.springframework.cloud.gateway: INFO # Nivel de log para Spring Cloud Gateway
+    org.springframework.security: DEBUG # Para debug de seguridad
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n" # Formato de salida en consola
+
+spring:
+  application.name: api-gateway # Nombre de la aplicación
+
+  # Configuración de OAuth2 Resource Server (JWT con Keycloak)
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9090/realms/videoclub
+
+  cloud:
+    gateway:
+      # CORS is now handled by CorsWebFilterConfig bean (applies to ALL responses)
+      # globalcors disabled to prevent duplicate CORS headers
+      routes:
+        - id: catalogo # Servicio de Catálogo de Películas
+          uri: http://localhost:8081 # Puerto del servicio Catálogo
+          predicates:
+            - Path=/api/peliculas/** # Rutas de películas
+          filters:
+            - StripPrefix=1 # Elimina /api del path
+        - id: catalogo-admin # Admin CRUD de películas
+          uri: http://localhost:8081 # Puerto del servicio Catálogo
+          predicates:
+            - Path=/api/admin/** # Rutas admin
+        - id: rating # Servicio de Rating de Películas
+          uri: http://localhost:8082 # Puerto del servicio Rating
+          predicates:
+            - Path=/api/ratings/** # Rutas de ratings
+          filters:
+            - StripPrefix=1 # Elimina /api del path
+        - id: ventas-carrito # Servicio de Ventas (Carrito)
+          uri: http://localhost:8083 # Puerto del servicio Ventas
+          predicates:
+            - Path=/api/carrito/** # Rutas de carrito
+          filters:
+            - StripPrefix=1 # Elimina /api del path
+        - id: keycloak # Servicio de autenticación Keycloak
+          uri: http://localhost:9090 # Puerto de Keycloak
+          predicates:
+            - Path=/auth/**,/realms/** # Rutas de Keycloak
+          filters:
+            - RewritePath=/auth/(?<segment>.*), /$\{segment} # Reescribe /auth/* a /*
+
+# Deshabilita Eureka por defecto
+eureka:
+  client:
+    enabled: false # No registrar en Eureka
+# Configuración de Actuator para diagnóstico
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+  endpoint:
+    gateway:
+      enabled: true

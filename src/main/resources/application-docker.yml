@@ -1,0 +1,77 @@
+# Puerto en el que se ejecuta el API Gateway
+server:
+  port: 9500
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: DEBUG
+
+spring:
+  application.name: api-gateway
+
+  # Configuración de OAuth2 Resource Server (JWT)
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak-sso:8080/realms/videoclub
+
+  cloud:
+    gateway:
+      # CORS is now handled by CorsWebFilterConfig bean (applies to ALL responses)
+      # globalcors disabled to prevent duplicate CORS headers
+      routes:
+        - id: catalogo
+          uri: http://catalogo-backend:8080
+          predicates:
+            - Path=/api/peliculas/**
+          filters:
+            - StripPrefix=1
+        - id: catalogo-admin
+          uri: http://catalogo-backend:8080
+          predicates:
+            - Path=/api/admin/**
+        - id: categorias
+          uri: http://catalogo-backend:8080
+          predicates:
+            - Path=/api/categorias/**
+          filters:
+            - StripPrefix=1
+        - id: rating
+          uri: http://rating-service:8082
+          predicates:
+            - Path=/api/ratings/**
+          filters:
+            - StripPrefix=1
+        - id: ventas
+          uri: http://ventas-service:8083
+          predicates:
+            - Path=/api/ventas/**
+          filters:
+            - StripPrefix=1
+        - id: ventas-carrito
+          uri: http://ventas-service:8083
+          predicates:
+            - Path=/api/carrito/**
+          filters:
+            - StripPrefix=1
+        - id: keycloak
+          uri: http://keycloak:8080
+          predicates:
+            - Path=/auth/**,/realms/**
+
+eureka:
+  client:
+    enabled: false
+# Configuración de Actuator para diagnóstico
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+  endpoint:
+    gateway:
+      enabled: true

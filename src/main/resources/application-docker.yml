@@ -46,6 +46,14 @@ spring:
             - Path=/api/ratings/**
           filters:
             - StripPrefix=1
+        - id: ventas-compras
+          uri: http://ventas-service:8083
+          predicates:
+            - Path=/api/compras/**
+        - id: ventas-carrito-confirmar
+          uri: http://ventas-service:8083
+          predicates:
+            - Path=/api/carrito/confirmar
         - id: ventas
           uri: http://ventas-service:8083
           predicates:

@@ -43,6 +43,14 @@ spring:
             - Path=/api/ratings/** # Rutas de ratings
           filters:
             - StripPrefix=1 # Elimina /api del path
+        - id: ventas-compras # Servicio de Ventas (Compras)
+          uri: http://localhost:8083 # Puerto del servicio Ventas
+          predicates:
+            - Path=/api/compras/** # Rutas de compras
+        - id: ventas-carrito-confirmar # Servicio de Ventas (Confirmación de compra)
+          uri: http://localhost:8083 # Puerto del servicio Ventas
+          predicates:
+            - Path=/api/carrito/confirmar # Ruta de confirmación (mantiene prefijo /api)
         - id: ventas-carrito # Servicio de Ventas (Carrito)
           uri: http://localhost:8083 # Puerto del servicio Ventas
           predicates:

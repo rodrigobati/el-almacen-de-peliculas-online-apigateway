@@ -50,7 +50,7 @@ spring:
           filters:
             - StripPrefix=1 # Elimina /api del path
         - id: descuentos # Nuevo servicio de Cupones/Descuentos
-          uri: http://localhost:8084 # puerto de descuentos
+          uri: http://localhost:8085 # puerto de descuentos
           predicates:
             - Path=/api/descuentos/**
           filters:

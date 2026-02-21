@@ -61,6 +61,23 @@
         <scope>test</scope>
     </dependency>
 
+    <!-- YAML parser required at runtime to load application.yml -->
+    <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+    </dependency>
+
+    <!-- Make downstream modules available on test classpath to enable annotation introspection -->
+    <!-- Internal project modules used by tests are moved to an opt-in profile -->
+
+    <!-- In-memory HTTP stub server for gateway forwarding tests (MockWebServer) -->
+    <dependency>
+        <groupId>com.squareup.okhttp3</groupId>
+        <artifactId>mockwebserver</artifactId>
+        <version>4.11.0</version>
+        <scope>test</scope>
+    </dependency>
+
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -86,5 +103,40 @@
             </plugin>
         </plugins>
     </build>
+
+    <!-- Optional profile to include internal SNAPSHOT test-dependencies when running tests locally
+         Activate with: -DinternalTests=true or -Pinternal-test-deps (property activation used here)
+    -->
+    <profiles>
+        <profile>
+            <id>internal-test-deps</id>
+            <activation>
+                <property>
+                    <name>internalTests</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>unrn</groupId>
+                    <artifactId>el-almacen-de-peliculas-online</artifactId>
+                    <version>1.0-SNAPSHOT</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>unrn</groupId>
+                    <artifactId>rating</artifactId>
+                    <version>0.0.1-SNAPSHOT</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>unrn</groupId>
+                    <artifactId>el-almacen-de-peliculas-online-ventas</artifactId>
+                    <version>0.0.1-SNAPSHOT</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
 </project>

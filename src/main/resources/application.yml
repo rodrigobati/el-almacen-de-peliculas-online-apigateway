@@ -7,7 +7,8 @@ logging:
   level:
     root: INFO # Nivel de log global
     org.springframework.web: INFO # Nivel de log para Spring Web
-    org.springframework.cloud.gateway: INFO # Nivel de log para Spring Cloud Gateway
+    org.springframework.cloud.gateway: DEBUG # Nivel de log para Spring Cloud Gateway (temporal)
+    reactor.netty.http.client: DEBUG # HTTP client debug for forwarded requests
     org.springframework.security: DEBUG # Para debug de seguridad
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n" # Formato de salida en consola

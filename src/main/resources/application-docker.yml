@@ -66,6 +66,12 @@ spring:
             - Path=/api/carrito/**
           filters:
             - StripPrefix=1
+        - id: descuentos
+          uri: http://descuentos-service:8085
+          predicates:
+            - Path=/api/descuentos/**
+          filters:
+            - StripPrefix=1
         - id: keycloak
           uri: http://keycloak:8080
           predicates:

@@ -57,6 +57,12 @@ spring:
             - Path=/api/carrito/** # Rutas de carrito
           filters:
             - StripPrefix=1 # Elimina /api del path
+        - id: descuentos # Nuevo servicio de Cupones/Descuentos
+          uri: http://localhost:8085 # puerto de descuentos
+          predicates:
+            - Path=/api/descuentos/**
+          filters:
+            - StripPrefix=1 # Elimina /api para que al micro llegue como /descuentos/**
         - id: keycloak # Servicio de autenticación Keycloak
           uri: http://localhost:9090 # Puerto de Keycloak
           predicates:

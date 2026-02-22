@@ -57,6 +57,9 @@ public class SecurityConfig {
                                                 // Carrito: requiere autenticación
                                                 .pathMatchers("/api/carrito/**").authenticated()
 
+                                                // Descuentos: requiere autenticación para listar o aplicar
+                                                .pathMatchers("/api/descuentos/**").authenticated()
+
                                                 // Cualquier otra ruta por defecto es pública
                                                 .anyExchange().permitAll())
                                 .oauth2ResourceServer(oauth2 -> oauth2

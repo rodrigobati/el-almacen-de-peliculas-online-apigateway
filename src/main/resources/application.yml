@@ -21,7 +21,11 @@ spring:
     oauth2:
       resourceserver:
         jwt:
+          #issuer-uri: http://keycloak-sso:8080/realms/videoclub
+          # Mantenemos el nombre que viene EN el token (el que pediste desde afuera)
           issuer-uri: http://localhost:9090/realms/videoclub
+          # Pero le decimos al Gateway dónde buscar las llaves REALMENTE (red interna)
+          jwk-set-uri: http://keycloak-sso:8080/realms/videoclub/protocol/openid-connect/certs
 
   cloud:
     gateway:
@@ -29,42 +33,42 @@ spring:
       # globalcors disabled to prevent duplicate CORS headers
       routes:
         - id: catalogo # Servicio de Catálogo de Películas
-          uri: http://localhost:8081 # Puerto del servicio Catálogo
+          uri: http://catalogo-backend:8081 # Puerto del servicio Catálogo
           predicates:
             - Path=/api/peliculas/** # Rutas de películas
           filters:
             - StripPrefix=1 # Elimina /api del path
         - id: catalogo-admin # Admin CRUD de películas
-          uri: http://localhost:8081 # Puerto del servicio Catálogo
+          uri: http://catalogo-backend:8081 # Puerto del servicio Catálogo
           order: 100
           predicates:
             - Path=/api/admin/** # Rutas admin
         - id: rating # Servicio de Rating de Películas
-          uri: http://localhost:8082 # Puerto del servicio Rating
+          uri: http://rating-service:8082 # Puerto del servicio Rating
           predicates:
             - Path=/api/ratings/** # Rutas de ratings
           filters:
             - StripPrefix=1 # Elimina /api del path
         - id: ventas-compras # Servicio de Ventas (Compras)
-          uri: http://localhost:8083 # Puerto del servicio Ventas
+          uri: http://ventas-service:8083 # Puerto del servicio Ventas
           predicates:
             - Path=/api/compras/** # Rutas de compras
         - id: ventas-carrito-confirmar # Servicio de Ventas (Confirmación de compra)
-          uri: http://localhost:8083 # Puerto del servicio Ventas
+          uri: http://ventas-service:8083 # Puerto del servicio Ventas
           predicates:
             - Path=/api/carrito/confirmar # Ruta de confirmación (mantiene prefijo /api)
         - id: ventas-carrito # Servicio de Ventas (Carrito)
-          uri: http://localhost:8083 # Puerto del servicio Ventas
+          uri: http://ventas-service:8083 # Puerto del servicio Ventas
           predicates:
             - Path=/api/carrito/** # Rutas de carrito
           filters:
             - StripPrefix=1 # Elimina /api del path
-        - id: descuentos-admin # Admin servicio de Cupones/Descuentos
+        - id: descuentos # Nuevo servicio de Cupones/Descuentos
           uri: http://localhost:8085 # puerto de descuentos
-          order: 0
           predicates:
-            - Path=/api/admin/descuentos/**
-          # Preserve /api/admin prefix so backend receives /api/admin/descuentos/**
+            - Path=/api/descuentos/**
+          filters:
+            - StripPrefix=1 # Elimina /api para que al micro llegue como /descuentos/**
         - id: keycloak # Servicio de autenticación Keycloak
           uri: http://localhost:9090 # Puerto de Keycloak
           predicates:

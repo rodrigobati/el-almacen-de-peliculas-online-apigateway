@@ -36,6 +36,7 @@ spring:
             - StripPrefix=1 # Elimina /api del path
         - id: catalogo-admin # Admin CRUD de películas
           uri: http://localhost:8081 # Puerto del servicio Catálogo
+          order: 100
           predicates:
             - Path=/api/admin/** # Rutas admin
         - id: rating # Servicio de Rating de Películas
@@ -58,12 +59,12 @@ spring:
             - Path=/api/carrito/** # Rutas de carrito
           filters:
             - StripPrefix=1 # Elimina /api del path
-        - id: descuentos # Nuevo servicio de Cupones/Descuentos
+        - id: descuentos-admin # Admin servicio de Cupones/Descuentos
           uri: http://localhost:8085 # puerto de descuentos
+          order: 0
           predicates:
-            - Path=/api/descuentos/**
-          filters:
-            - StripPrefix=1 # Elimina /api para que al micro llegue como /descuentos/**
+            - Path=/api/admin/descuentos/**
+          # Preserve /api/admin prefix so backend receives /api/admin/descuentos/**
         - id: keycloak # Servicio de autenticación Keycloak
           uri: http://localhost:9090 # Puerto de Keycloak
           predicates:

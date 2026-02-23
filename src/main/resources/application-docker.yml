@@ -32,6 +32,7 @@ spring:
             - StripPrefix=1
         - id: catalogo-admin
           uri: http://catalogo-backend:8080
+          order: 100
           predicates:
             - Path=/api/admin/**
         - id: categorias
@@ -66,12 +67,12 @@ spring:
             - Path=/api/carrito/**
           filters:
             - StripPrefix=1
-        - id: descuentos
+        - id: descuentos-admin
           uri: http://descuentos-service:8085
+          order: 0
           predicates:
-            - Path=/api/descuentos/**
-          filters:
-            - StripPrefix=1
+            - Path=/api/admin/descuentos/**
+          # preserve /api/admin prefix so backend receives /api/admin/descuentos/**
         - id: keycloak
           uri: http://keycloak:8080
           predicates:

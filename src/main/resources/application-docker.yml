@@ -72,6 +72,12 @@ spring:
           order: 0
           predicates:
             - Path=/api/admin/descuentos/**
+        - id: descuentos
+          uri: http://descuentos-service:8085
+          predicates:
+            - Path=/api/descuentos/**
+          filters:
+            - StripPrefix=1
           # preserve /api/admin prefix so backend receives /api/admin/descuentos/**
         - id: keycloak
           uri: http://keycloak:8080

@@ -47,8 +47,7 @@ spring:
           uri: http://rating-service:8082 # Puerto del servicio Rating
           predicates:
             - Path=/api/ratings/** # Rutas de ratings
-          filters:
-            - StripPrefix=1 # Elimina /api del path
+          # Nota: no aplicamos StripPrefix aquí para que el servicio reciba /api/ratings/**
         - id: ventas-compras # Servicio de Ventas (Compras)
           uri: http://ventas-service:8083 # Puerto del servicio Ventas
           predicates:

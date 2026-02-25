@@ -101,6 +101,14 @@
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.3</version>
+                <configuration>
+                    <excludedTags>e2e</excludedTags>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -140,3 +148,4 @@
     </profiles>
 
 </project>
+

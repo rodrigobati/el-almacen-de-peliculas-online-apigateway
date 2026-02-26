@@ -106,7 +106,11 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.3</version>
                 <configuration>
-                    <excludedTags>e2e</excludedTags>
+                    <properties>
+                        <configurationParameters>
+                            junit.platform.tags.exclude=e2e
+                        </configurationParameters>
+                    </properties>
                 </configuration>
             </plugin>
         </plugins>

@@ -1,0 +1,70 @@
+name: CI - apigateway (unit tests)
+
+on:
+  push:
+    branches:
+      - rating
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  unit-tests:
+    name: Unit Tests (apigateway)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 23 (Temurin) and enable Maven cache
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "23"
+          cache: maven
+
+      - name: List pom.xml files (diagnostic)
+        run: find . -maxdepth 4 -name pom.xml -print
+
+      - name: Run unit tests (maven)
+        env:
+          CI: "true"
+          TERM: "dumb"
+          LANG: "C.UTF-8"
+        run: |
+          set -euo pipefail
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          CANDIDATES=(
+            "$GITHUB_WORKSPACE/pom.xml"
+            "$GITHUB_WORKSPACE/el-almacen-de-peliculas-online-apigateway/pom.xml"
+            "$GITHUB_WORKSPACE/el-almacen-de-peliculas-online/pom.xml"
+          )
+
+          FOUND_DIR=""
+          for p in "${CANDIDATES[@]}"; do
+            if [ -f "$p" ]; then
+              FOUND_DIR=$(dirname "$p")
+              break
+            fi
+          done
+
+          if [ -z "$FOUND_DIR" ]; then
+            echo "pom.xml not found in candidates, searching workspace..."
+            POM_PATH=$(find "$GITHUB_WORKSPACE" -maxdepth 4 -name pom.xml -print -quit || true)
+            if [ -n "$POM_PATH" ]; then
+              FOUND_DIR=$(dirname "$POM_PATH")
+            fi
+          fi
+
+          if [ -n "$FOUND_DIR" ]; then
+            echo "Running tests in $FOUND_DIR"
+            cd "$FOUND_DIR"
+            # Redirect stdin from /dev/null to avoid interactive prompts in tests
+            mvn -B -ntp test < /dev/null
+          else
+            echo "ERROR: no pom.xml found under GITHUB_WORKSPACE ($GITHUB_WORKSPACE)"
+            echo "Workspace listing for debug:" && ls -la "$GITHUB_WORKSPACE" || true
+            find "$GITHUB_WORKSPACE" -maxdepth 4 -name pom.xml -print || true
+            exit 1
+          fi

@@ -2,12 +2,8 @@ name: CI - apigateway (unit tests)
 
 on:
   push:
-    branches:
-      - rating
-      - main
   pull_request:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   unit-tests:
@@ -17,11 +13,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 23 (Temurin) and enable Maven cache
+      - name: Set up JDK 21 (Temurin) and enable Maven cache
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "23"
+          java-version: "21"
           cache: maven
 
       - name: List pom.xml files (diagnostic)

@@ -1,5 +1,27 @@
 # API Gateway Videoclub
 
+## Documentacion corta de componente
+
+El API Gateway no es una vertical de negocio: es infraestructura de entrada HTTP. Su proposito es validar JWT, aplicar CORS/filtros y enrutar rutas externas hacia las verticales internas.
+
+### Servicios HTTP que expone
+
+| Ruta externa | Destino |
+| --- | --- |
+| `/api/peliculas/**` | Catalogo. |
+| `/api/categorias/**` | Catalogo. |
+| `/api/admin/**` | Backoffice de Catalogo. |
+| `/api/ratings/**` | Rating. |
+| `/api/carrito/**` | Ventas. |
+| `/api/compras/**` | Ventas. |
+| `/api/descuentos/**` | Descuentos. |
+| `/api/admin/descuentos/**` | Descuentos admin, definido en perfil Docker. |
+| `/auth/**`, `/realms/**` | Keycloak. |
+
+### Eventos
+
+No publica ni consume eventos de dominio.
+
 Este proyecto implementa un API Gateway basado en Spring Cloud Gateway para el sistema de microservicios Videoclub. Su función principal es enrutar las solicitudes HTTP hacia los microservicios internos, aplicar filtros y facilitar la gestión centralizada de rutas y seguridad.
 
 ## Requisitos previos
